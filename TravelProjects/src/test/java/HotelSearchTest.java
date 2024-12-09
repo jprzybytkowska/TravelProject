@@ -1,27 +1,16 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class HotelSearch {
-
+public class HotelSearchTest extends BaseTest {
 
     @Test
-    public void searchHotel() {
-        //konfiguracja webdrivera dla chroma
-        WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        //otwarcie strony
-        driver.get("http://www.kurs-selenium.pl/demo/");
+    public void searchHotelTest() {
         //znalezienie pola do wpisania kraju, klikniecie
         driver.findElement(By.xpath("//span[text()='Search by Hotel or City Name']")).click();
         //wpisanie nazwy kraju
@@ -58,16 +47,9 @@ public class HotelSearch {
     }
 
     @Test
-    public void searchHotelWithoutName() {
-        //konfiguracja webdrivera dla chroma
-        WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        //otwarcie strony
-        driver.get("http://www.kurs-selenium.pl/demo/");
-        //wait
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    public void searchHotelWithoutNameTest() {
 
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //wpisanie daty od i klikniecie
         driver.findElement(By.name("checkin")).sendKeys("22/12/2024");
         driver.findElement(By.name("checkout")).click();
