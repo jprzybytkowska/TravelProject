@@ -1,10 +1,13 @@
 package pl.seleniumdemo.pages;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import pl.seleniumdemo.tests.HotelSearchTest;
 
 import java.util.List;
 
@@ -42,6 +45,8 @@ public class HotelSearchPage {
 
     private WebDriver driver;
 
+    private static final Logger logger = LogManager.getLogger(HotelSearchTest.class);
+
     public HotelSearchPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
@@ -49,23 +54,29 @@ public class HotelSearchPage {
 
 
     public HotelSearchPage setCity(String cityName) {
+        logger.info("Setting city" + cityName);
         searchHotelSpan.click();
         searchHotelInput.sendKeys(cityName);
         String xpath = String.format("//span[@class='select2-match' and text()='%s']", cityName);
         driver.findElement(By.xpath(xpath)).click();
+        logger.info("Setting city done");
         return this;
     }
 
     public HotelSearchPage setDates(String checkin, String checkout) {
+        System.out.println("Setting dates: " + checkin + "checkin" + checkout + "checkout");
         chekInInput.sendKeys(checkin);
         chekOutInput.sendKeys(checkout);
+        System.out.println("setting dates done");
         return this;
     }
 
     public HotelSearchPage setTravellers(int adultstoAdd, int childToAdd) {
+        System.out.println("adding adults" + adultstoAdd + "kids:" + childToAdd);
         travellersInput.click();
         addTraveller(adultPlusBtn, adultstoAdd);
         addTraveller(childPlusBtn, childToAdd);
+        System.out.println("adding people done");
         return this;
     }
 
@@ -76,7 +87,9 @@ public class HotelSearchPage {
     }
 
     public ResultsPage performSearch() {
+        System.out.println("performing search");
         searchButton.click();
+        System.out.println("performing search done");
         return new ResultsPage(driver);
     }
 

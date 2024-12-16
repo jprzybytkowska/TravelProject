@@ -45,12 +45,12 @@ public class SignUpTest extends BaseTest {
 //        int randomNumber = (int) (Math.random() * 1000);
 //        String email = "tester" + randomNumber + "@testerka.pl";
 //
-//        User user = new User();
-//        user.setFirstName("Justyna");
-//        user.setLastName("Testerkaa");
-//        user.setPhone("1234569870");
-//        user.setEmail(email);
-//        user.setPassword("Testowe1122");
+//        User justyna = new User();
+//        justyna.setFirstName("Justyna");
+//        justyna.setLastName("Testerkaa");
+//        justyna.setPhone("1234569870");
+//        justyna.setEmail(email);
+//        justyna.setPassword("Testowe1122");
 //
 //        //znajdowanie przycisku sign up i klikniecie
 //        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
@@ -58,7 +58,7 @@ public class SignUpTest extends BaseTest {
 //
 //        //wypelnienie formularza
 //        SignUpPage signUpPage = new SignUpPage(driver)
-//                .fillSignUpForm(user);
+//                .fillSignUpForm(justyna);
 //
 //        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
 //
