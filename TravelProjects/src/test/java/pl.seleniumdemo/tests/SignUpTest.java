@@ -1,18 +1,14 @@
 package pl.seleniumdemo.tests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pl.seleniumdemo.pages.HotelSearchPage;
+import pl.seleniumdemo.pages.LoggedUserPage;
 import pl.seleniumdemo.pages.SignUpPage;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SignUpTest extends BaseTest {
 
@@ -21,99 +17,91 @@ public class SignUpTest extends BaseTest {
     @Test
     public void signUpTest() {
 
+        String lastName = "Testerka";
         //ustawienie generowania unikalnych adresach email
         int randomNumber = (int) (Math.random() * 1000);
-        String email = "tester" + randomNumber + "@tester.pl";
 
         //znajdowanie przycisku sign up i klikniecie
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        hotelSearchPage.openSignUpForm();
+        LoggedUserPage loggedUserPage = new HotelSearchPage(driver)
+                .openSignUpForm()
+                .setFirstName("Justyna")
+                .setLastName(lastName)
+                .setPhone("123456789")
+                .setEmail("tester" + randomNumber + "@testerka.pl")
+                .setPassword("Testowe123@")
+                .confirmPassword("Testowe123@")
+                .signUp();
+        //this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        //wypelnienie formularza
-        SignUpPage signUpPage = new SignUpPage(driver);
-        signUpPage.setFirstName("Justyna");
-        signUpPage.setLastName("Testerka");
-        signUpPage.setPhone("123456789");
-        signUpPage.setEmail(email);
-        signUpPage.setPassword("Testowe123@");
-        signUpPage.confirmPassword("Testowe123@");
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        signUpPage.signUp();
-
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        WebElement heading = driver.findElement(By.xpath("//h3[@class='RTL']"));
-
-        Assert.assertTrue(heading.getText().contains("Hi, Justyna Testerka"), "Nie znaleziono powitania");
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        Assert.assertEquals(heading.getText(), "Hi, Justyna Testerka");
+        Assert.assertTrue(loggedUserPage.getHeadingText().contains(lastName));
+        //this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, Justyna Testerka");
     }
+
+//    @Test
+//    public void signUpTest2() { //inny sposob wypelniania formularza
+//
+//        //ustawienie generowania unikalnych adresach email
+//        int randomNumber = (int) (Math.random() * 1000);
+//        String email = "tester" + randomNumber + "@testerka.pl";
+//
+//        User user = new User();
+//        user.setFirstName("Justyna");
+//        user.setLastName("Testerkaa");
+//        user.setPhone("1234569870");
+//        user.setEmail(email);
+//        user.setPassword("Testowe1122");
+//
+//        //znajdowanie przycisku sign up i klikniecie
+//        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
+//        hotelSearchPage.openSignUpForm();
+//
+//        //wypelnienie formularza
+//        SignUpPage signUpPage = new SignUpPage(driver)
+//                .fillSignUpForm(user);
+//
+//        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
+//
+//        Assert.assertTrue(loggedUserPage.getHeadingText().contains(user.getLastName()));
+//        Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, Justyna Testerkaa");
+//    }
 
     @Test
     public void signUpEmptyFieldsTest() {
 
-            //otwarcie strony
-            driver.findElements(By.xpath("//*[@id='li_myaccount']"))
-                    .stream()
-                    .filter(WebElement::isDisplayed)
-                    .findFirst()
-                    .ifPresent(WebElement::click);
-            driver.findElements(By.xpath("//*[@id='li_myaccount']/ul/li[2]")).get(1).click();
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            driver.findElement(By.xpath("//button[text()=' Sign Up']")).click();
+        //otwarcie strony
+        //znajdowanie przycisku sign up i klikniecie
 
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class='alert alert-danger']//p")));
+        SignUpPage signUpPage = new HotelSearchPage(driver).openSignUpForm();
+        signUpPage.signUp();
 
-            List<String> errors = driver.findElements(By.xpath("//div[@class='alert alert-danger']//p"))
-                    .stream().
-                    map(WebElement::getText)
-                    .collect(Collectors.toList());
+        List<String> errors = signUpPage.getErrors();
 
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class='alert alert-danger']//p")));
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(errors.contains("The Email field is required."));
+        softAssert.assertTrue(errors.contains("The Password field is required."));
+        softAssert.assertTrue(errors.contains("The Password field is required."));
+        softAssert.assertTrue(errors.contains("The First name field is required."));
+        softAssert.assertTrue(errors.contains("The Last Name field is required."));
+        softAssert.assertAll();
 
-            SoftAssert softAssert = new SoftAssert();
-            softAssert.assertTrue(errors.contains("The Email field is required."));
-            softAssert.assertTrue(errors.contains("The Password field is required."));
-            softAssert.assertTrue(errors.contains("The Password field is required."));
-            softAssert.assertTrue(errors.contains("The First name field is required."));
-            softAssert.assertTrue(errors.contains("The Last Name field is required."));
-            softAssert.assertAll();
-
-        }
+    }
 
     @Test
     public void signUpWithInvalidEmailTest() {
 
-            //znajdowanie przycisku sign up i klikniecie
-            driver.findElements(By.xpath("//*[@id='li_myaccount']"))
-                    .stream()
-                    .filter(WebElement::isDisplayed)
-                    .findFirst()
-                    .ifPresent(WebElement::click);
-            driver.findElements(By.xpath("//*[@id='li_myaccount']/ul/li[2]")).get(1).click();
+        //wypelnienie formularza
+        SignUpPage signUpPage = new HotelSearchPage(driver)
+                .openSignUpForm()
+                .setFirstName("Justyna")
+                .setLastName("Testerkaa")
+                .setPhone("123456789")
+                .setEmail("email")
+                .setPassword("Testowe123@")
+                .confirmPassword("Testowe123@");
+        signUpPage.signUp();
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            //wypelnienie formularza
-            driver.findElement(By.name("firstname")).sendKeys("Justyna");
-            driver.findElement(By.name("lastname")).sendKeys("Testerka");
-            driver.findElement(By.name("phone")).sendKeys("123456789");
-            driver.findElement(By.name("email")).sendKeys("test.pl");
-            driver.findElement(By.name("password")).sendKeys("Testowe123@");
-            driver.findElement(By.name("confirmpassword")).sendKeys("Testowe123@");
-            WebElement elementSignUp = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()=' Sign Up']")));
-
-            driver.findElement(By.xpath("//button[text()=' Sign Up']")).click();
-
-            List<String> errors = driver.findElements(By.xpath("//div[@class='alert alert-danger']//p"))
-                    .stream()
-                    .map(WebElement::getText)
-                    .collect(Collectors.toList());
-
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class='alert alert-danger']//p")));
-
-            Assert.assertTrue(errors.contains("The Email field must contain a valid email address."));
+        Assert.assertTrue(signUpPage.getErrors().contains("The Email field must contain a valid email address."));
 
     }
 }

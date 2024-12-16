@@ -21,7 +21,7 @@ public class ResultsPage {
     }
 
     public List<String> getHotelNames() {
-         return hotelList.stream()
+        return hotelList.stream()
                 .map(el -> el.getAttribute("textContent"))
                 .collect(Collectors.toList());
     }

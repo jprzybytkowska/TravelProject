@@ -1,4 +1,5 @@
 package pl.seleniumdemo.pages;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,22 +48,25 @@ public class HotelSearchPage {
     }
 
 
-    public void setCity(String cityName) {
+    public HotelSearchPage setCity(String cityName) {
         searchHotelSpan.click();
         searchHotelInput.sendKeys(cityName);
         String xpath = String.format("//span[@class='select2-match' and text()='%s']", cityName);
         driver.findElement(By.xpath(xpath)).click();
+        return this;
     }
 
-    public void setDates(String checkin, String checkout) {
+    public HotelSearchPage setDates(String checkin, String checkout) {
         chekInInput.sendKeys(checkin);
         chekOutInput.sendKeys(checkout);
+        return this;
     }
 
-    public void setTravellers(int adultstoAdd, int childToAdd) {
+    public HotelSearchPage setTravellers(int adultstoAdd, int childToAdd) {
         travellersInput.click();
-        addTraveller(adultPlusBtn,adultstoAdd);
-        addTraveller(childPlusBtn,childToAdd);
+        addTraveller(adultPlusBtn, adultstoAdd);
+        addTraveller(childPlusBtn, childToAdd);
+        return this;
     }
 
     private void addTraveller(WebElement travelerBtn, int numberOfTravellers) {
@@ -71,10 +75,14 @@ public class HotelSearchPage {
         }
     }
 
-        public void performSearch() {searchButton.click();}
+    public ResultsPage performSearch() {
+        searchButton.click();
+        return new ResultsPage(driver);
+    }
 
-    public void openSignUpForm() {
+    public SignUpPage openSignUpForm() {
         myAccountLink.stream().filter(WebElement::isDisplayed).findFirst().ifPresent(WebElement::click);
         mySignUpLink.get(1).click();
+        return new SignUpPage(driver);
     }
 }

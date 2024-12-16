@@ -23,6 +23,7 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
     }
+
     @AfterMethod
     public void teearDown() {
         driver.quit();
