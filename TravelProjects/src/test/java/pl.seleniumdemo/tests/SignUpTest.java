@@ -1,5 +1,6 @@
 package pl.seleniumdemo.tests;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -7,7 +8,9 @@ import org.testng.asserts.SoftAssert;
 import pl.seleniumdemo.pages.HotelSearchPage;
 import pl.seleniumdemo.pages.LoggedUserPage;
 import pl.seleniumdemo.pages.SignUpPage;
+import pl.seleniumdemo.utils.SeleniumHelper;
 
+import java.time.Duration;
 import java.util.List;
 
 public class SignUpTest extends BaseTest {
@@ -34,7 +37,7 @@ public class SignUpTest extends BaseTest {
         //this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         Assert.assertTrue(loggedUserPage.getHeadingText().contains(lastName));
-        //this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, Justyna Testerka");
     }
 
@@ -75,6 +78,8 @@ public class SignUpTest extends BaseTest {
         SignUpPage signUpPage = new HotelSearchPage(driver).openSignUpForm();
         signUpPage.signUp();
 
+        SeleniumHelper.waitForNoEmptyList(driver, By.xpath("//div[@class='alert alert-danger']//p"));
+
         List<String> errors = signUpPage.getErrors();
 
         SoftAssert softAssert = new SoftAssert();
@@ -101,6 +106,7 @@ public class SignUpTest extends BaseTest {
                 .confirmPassword("Testowe123@");
         signUpPage.signUp();
 
+        SeleniumHelper.waitForNoEmptyList(driver, By.xpath("//div[@class='alert alert-danger']//p"));
         Assert.assertTrue(signUpPage.getErrors().contains("The Email field must contain a valid email address."));
 
     }

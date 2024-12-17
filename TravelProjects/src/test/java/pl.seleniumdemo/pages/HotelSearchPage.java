@@ -1,13 +1,13 @@
 package pl.seleniumdemo.pages;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import pl.seleniumdemo.tests.HotelSearchTest;
+import pl.seleniumdemo.utils.SeleniumHelper;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class HotelSearchPage {
 
     private WebDriver driver;
 
-    private static final Logger logger = LogManager.getLogger(HotelSearchTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public HotelSearchPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
@@ -58,32 +58,32 @@ public class HotelSearchPage {
         searchHotelSpan.click();
         searchHotelInput.sendKeys(cityName);
         String xpath = String.format("//span[@class='select2-match' and text()='%s']", cityName);
+        SeleniumHelper.waitForElementToExist(driver, By.xpath(xpath));
         driver.findElement(By.xpath(xpath)).click();
         logger.info("Setting city done");
         return this;
     }
 
     public HotelSearchPage setDates(String checkin, String checkout) {
-        System.out.println("Setting dates: " + checkin + "checkin" + checkout + "checkout");
+        logger.info("Setting dates: " + checkin + "checkin" + checkout + "checkout");
         chekInInput.sendKeys(checkin);
         chekOutInput.sendKeys(checkout);
-        System.out.println("setting dates done");
+        logger.info("setting dates done");
         return this;
     }
 
     public HotelSearchPage setTravellers(int adultstoAdd, int childToAdd) {
-        System.out.println("adding adults" + adultstoAdd + "kids:" + childToAdd);
+        logger.info("adding adults" + adultstoAdd + "kids:" + childToAdd);
         travellersInput.click();
         addTraveller(adultPlusBtn, adultstoAdd);
         addTraveller(childPlusBtn, childToAdd);
-        System.out.println("adding people done");
+        logger.info("adding people done");
         return this;
     }
 
     private void addTraveller(WebElement travelerBtn, int numberOfTravellers) {
-        for (int i = 0; i < numberOfTravellers; i++) {
+        for (int i = 0; i < numberOfTravellers; i++)
             travelerBtn.click();
-        }
     }
 
     public ResultsPage performSearch() {
